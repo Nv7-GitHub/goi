@@ -7,18 +7,18 @@ activate (GtkApplication* app,
   GtkWidget *window;
   GtkWidget *label;
 
-  window = gtk_application_window_new (app);
-  label = gtk_label_new ("Hello GNOME!");
-  gtk_container_add (GTK_CONTAINER (window), label);
-  gtk_window_set_title (GTK_WINDOW (window), "Welcome to GNOME");
-  gtk_window_set_default_size (GTK_WINDOW (window), 200, 100);
-  gtk_widget_show_all (window);
+  window = gtk_application_window_new(app);
+  label = gtk_label_new("Hello GNOME!");
+  gtk_container_add(GTK_CONTAINER(window), label);
+  gtk_window_set_title(GTK_WINDOW(window), "Welcome to GNOME");
+  gtk_window_set_default_size(GTK_WINDOW(window), 200, 100);
+  gtk_widget_show_all(window);
 }
 
-int
-start (int    argc,
-      char **argv)
-{
+int start () {
+  int argc = 0;
+  char **argv = NULL;
+  
   GtkApplication *app;
   int status;
 
