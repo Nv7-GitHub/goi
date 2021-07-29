@@ -3,7 +3,9 @@ package goi
 import "github.com/gotk3/gotk3/gtk"
 
 type TabSwitcher struct {
-	widget     gtk.IWidget
+	switcher   gtk.IWidget
+	stack      *gtk.Stack
+	widget     *gtk.Box
 	isVertical bool
 
 	pages  map[string]Component
@@ -19,16 +21,17 @@ func NewTabSwitcher() (*TabSwitcher, error) {
 		isVertical: false,
 		pages:      make(map[string]Component),
 	}
-	stack, err := gtk.StackNew()
+	var err error
+	t.stack, err = gtk.StackNew()
 	if err != nil {
 		return nil, err
 	}
-	t.widget, err = gtk.StackSwitcherNew()
+	t.switcher, err = gtk.StackSwitcherNew()
 	if err != nil {
 		return nil, err
 	}
-	t.widget.(*gtk.StackSwitcher).SetStack(stack)
-	return t, nil
+	t.switcher.(*gtk.StackSwitcher).SetStack(t.stack)
+	return t, t.setupWidget()
 }
 
 func NewTabSwitcherVertical() (*TabSwitcher, error) {
@@ -36,27 +39,39 @@ func NewTabSwitcherVertical() (*TabSwitcher, error) {
 		isVertical: true,
 		pages:      make(map[string]Component),
 	}
-	stack, err := gtk.StackNew()
+	var err error
+	t.stack, err = gtk.StackNew()
 	if err != nil {
 		return nil, err
 	}
-	t.widget, err = gtk.StackSidebarNew()
+	t.switcher, err = gtk.StackSidebarNew()
 	if err != nil {
 		return nil, err
 	}
-	t.widget.(*gtk.StackSidebar).SetStack(stack)
-	return t, nil
+	t.switcher.(*gtk.StackSidebar).SetStack(t.stack)
+	return t, t.setupWidget()
 }
 
-// AddPage adds a tab to the tab switcher, where the tab name is unique
-func (t *TabSwitcher) AddTab(name string, c Component) {
-	var widg *gtk.Stack
+// AddTab adds a tab to the tab switcher
+func (t *TabSwitcher) AddTab(title, id string, c Component) {
+	t.idList = append(t.idList, id)
+	t.pages[id] = c
+	t.stack.AddTitled(c.getWidget(), title, id)
+}
+
+func (t *TabSwitcher) setupWidget() error {
+	orient := gtk.ORIENTATION_VERTICAL
 	if t.isVertical {
-		widg = t.widget.(*gtk.StackSidebar).GetStack()
-	} else {
-		widg = t.widget.(*gtk.StackSwitcher).GetStack()
+		orient = gtk.ORIENTATION_HORIZONTAL
 	}
-	t.idList = append(t.idList, name)
-	t.pages[name] = c
-	widg.AddNamed(c.getWidget(), name)
+
+	box, err := gtk.BoxNew(orient, 0)
+	if err != nil {
+		return err
+	}
+
+	box.PackStart(t.switcher, false, false, 0)
+	box.PackStart(t.stack, true, true, 0)
+	t.widget = box
+	return nil
 }

@@ -1,6 +1,8 @@
 package goi
 
-import "testing"
+import (
+	"testing"
+)
 
 const width = 800
 const height = 600
@@ -26,8 +28,8 @@ func TestTabSwitcher(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	switcher.AddTab("Page 1", label)
-	switcher.AddTab("Page 2", label2)
+	switcher.AddTab("page1", "Page 1", label)
+	switcher.AddTab("page2", "Page 2", label2)
 
 	win.SetChild(switcher)
 	win.SetDefaultSize(width, height)
