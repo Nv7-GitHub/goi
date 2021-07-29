@@ -13,7 +13,7 @@ func TestTabSwitcher(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	switcher, err := NewTabSwitcher()
+	switcher, err := NewTabSwitcherVertical()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,8 +28,15 @@ func TestTabSwitcher(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	switcher.AddTab("page1", "Page 1", label)
-	switcher.AddTab("page2", "Page 2", label2)
+	err = switcher.AppendTab("Page 1", label)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = switcher.AppendTab("Page 2", label2)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	win.SetChild(switcher)
 	win.SetDefaultSize(width, height)
